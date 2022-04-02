@@ -1,0 +1,41 @@
+.loginInput {
+    width: 100%;
+    text-align: center;
+}
+
+.outerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.innerContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.credError {
+    color: rgb(150, 0, 0);
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: center;
+    font-size: 15px;
+    max-width: 200px;
+    text-align: center;
+}
+
+.loginBtn {
+    height: 35px;
+    background: #161616 !important;
+    color: white !important;
+}
+
+.loginDiv {
+    display: flex;
+    flex-direction: column;
+    
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

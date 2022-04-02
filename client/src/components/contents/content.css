@@ -1,0 +1,12 @@
+.vkui__root {
+    padding-top: 40px;
+}
+
+
+.vkuiPanelHeaderBack {
+    display: none;
+}
+
+.vkuiSimpleCell__main {
+    margin-left: 10px;
+}

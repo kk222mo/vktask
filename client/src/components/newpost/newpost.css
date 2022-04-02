@@ -1,0 +1,37 @@
+.textArea {
+}
+
+.outerDiv button {
+    background: black !important;
+    color: white;
+}
+
+.addButtonDiv {
+    flex-grow: 1;
+}
+
+.errorDiv {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.postImage {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 7px;
+}
+
+.removeImage {
+    margin-right: 10px;
+}
+
+.outerDiv {
+    padding: 20px;
+}
+
+.buttonsDiv {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}

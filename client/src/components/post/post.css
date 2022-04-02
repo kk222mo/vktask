@@ -1,0 +1,63 @@
+.postOuter {
+    padding: 10px;
+    min-height: 60px;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.postText {
+    flex-grow: 1;
+    margin-bottom: 10px;
+}
+
+.postImgDiv {
+    text-align: center;
+}
+
+.postImg {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 7px;
+}
+
+.authorProfile {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    
+}
+.pubInfo {
+    color: #555555;
+    font-size: small;
+    margin-left: 15px;
+}
+
+.authorProfile .Icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 7px;
+}
+.postBottom {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.userName {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.utilOptions .Icon {
+    display: flex;
+}
+
+.disappearing {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transition: visibility .8s, opacity .8s linear !important;
+}

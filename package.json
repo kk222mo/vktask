@@ -1,0 +1,29 @@
+{
+  "name": "vktask",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "build": "cd client && npm install && npm run buildClient",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-fileupload": "^1.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.4.1",
+    "sharp": "^0.30.3",
+    "validator": "^13.7.0"
+  },
+  "engines": {
+    "node": "16.1.0"
+  }
+}
