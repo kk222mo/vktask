@@ -57,6 +57,14 @@ class NewPostPage extends React.Component {
         });
     }
 
+    errorChecker = (res) => {
+        if (res.ok)
+            return res.json();
+        this.setButtonsLocked(false);
+        console.log(res.text());
+        errors.displayError(this, defs.DEFAULT_ERROR_S);
+    }
+
     createPost() {
         if (!this.state.buttonsLocked) {
             var textR = this.areaRef.current.value;
@@ -69,13 +77,7 @@ class NewPostPage extends React.Component {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({text: textR, imageId: this.state.image}),
-            }).then((res) => {
-                if (res.ok)
-                    return res.json();
-                this.setButtonsLocked(false);
-                console.log(res.text());
-                errors.displayError(this, defs.DEFAULT_ERROR_S);
-            })
+            }).then(this.errorChecker)
             .then((data) => {
                 console.log(data);
                 if (data['result'] == "ok") {
@@ -99,6 +101,7 @@ class NewPostPage extends React.Component {
         var formData = new FormData();
         var file = e.target.files[0];
         if (file) {
+            this.setButtonsLocked(true);
             formData.append("file", file);
             const options = {
                 method: "POST",
@@ -106,8 +109,9 @@ class NewPostPage extends React.Component {
 
             };
             fetch("/uploadimage", options)
-                .then(errors.errorCheck(this))
+                .then(this.errorChecker)
                 .then((data) => {
+                    this.setButtonsLocked(false);
                     if (data['result'] == "ok") {
                         this.setState({
                             image: data['_id'],
