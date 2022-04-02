@@ -23,3 +23,9 @@ app.post("/deletepost", async (req, res) => {
     var postId = req.body.postId;
     res.json(await posts.deletePost(token, postId));
 });
+
+app.post("/putlike", async (req, res) => {
+    var token = req.cookies.token;
+    var postId = req.body.postId;
+    res.json(await posts.putLike(token, postId));
+});

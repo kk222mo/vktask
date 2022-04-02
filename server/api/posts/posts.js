@@ -12,9 +12,12 @@ async function getAllPosts(token, skip, count, userId) {
         var all = await collection.find((userId ? {author: mongodb.ObjectId(userId)} : {})).sort({"date": -1}).skip(parseInt(skip)).limit(parseInt(count)).toArray();
         all.forEach((e) => {
             e.isOwner = (user != null && user._id.toString() == e.author.toString());
+            e.isLiked = (user && e.likes && e.likes[user._id] == 1);
+            e.likesCount = e.likes ? Object.values(e.likes).filter(v => v === 1).length : 0;
         });
         return {"result": "ok", "count": await collection.countDocuments((userId ? {author: mongodb.ObjectId(userId)} : {})), "data": all};
     } catch (e) {
+        console.log(e);
         return {"result": "fail", "reason": "Что-то пошло не так :("};
     }
     
@@ -48,4 +51,24 @@ async function deletePost(token, postId) {
 
 }
 
-module.exports = { getAllPosts, addPost, deletePost };
+async function putLike(token, postId) {
+    var user = await credentialsChecker.checkTokenAndGetUser(token);
+    var post = await collection.findOne({"_id": mongodb.ObjectId(postId)});
+    if (post != null && user != null && post.author.toString() != user._id.toString()) {
+        var likes = post.likes;
+        if (!likes)
+            likes = {};
+        if (!likes[user._id] || likes[user._id] == -1)
+            likes[user._id] = 1;
+        else {
+            likes[user._id] = -1;
+        }
+        await collection.updateOne({"_id": mongodb.ObjectId(postId)}, {
+            $set: {"likes": likes}
+        });
+        return {result: "ok", liked: likes[user._id], likesCount: Object.values(likes).filter(v => v == 1).length};
+    }
+    return {"result": "fail", "reason": "Что-то пошло не так :("};
+}
+
+module.exports = { getAllPosts, addPost, deletePost, putLike };

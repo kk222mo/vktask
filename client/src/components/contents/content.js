@@ -14,7 +14,6 @@ import Auth from "../auth/auth";
 import Profile from "../profile/profile";
 import NewPostPage from "../newpost/newpost";
 
-
   const Content = withAdaptivity(
     ({ viewWidth }) => {
       const platform = usePlatform();

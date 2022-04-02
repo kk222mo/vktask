@@ -22,6 +22,19 @@
     border-radius: 7px;
 }
 
+.likesCount {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-right: 3px;
+}
+
+.likeIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
 .authorProfile {
     display: flex;
     flex-direction: row;

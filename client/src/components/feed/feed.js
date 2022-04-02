@@ -26,6 +26,7 @@ class Feed extends React.Component {
             page: 0,
             count: 1000,
             error: null,
+            authorized: false,
         }
     }
 
@@ -40,12 +41,24 @@ class Feed extends React.Component {
         }
     }
 
+    whoami = () => {
+        return fetch("/whoami").then((res) => res.json())
+        .then((data) => {
+            this.setState({
+                authorized: data['result'] == 'authorized',
+            });
+        });
+      };
+
     componentDidMount() {
         this.isMountedV = 1;
         this.state.page = -1;
         this.state.posts = [];
         this.state.loaded = false;
-        this.loadMore();
+        this.whoami().then(() => {
+            this.loadMore();
+        });
+        
     }
 
     componentWillUnmount() {
@@ -68,6 +81,10 @@ class Feed extends React.Component {
         fetch(`/posts?count=${COUNT_PER_PAGE}&skip=${this.state.page * COUNT_PER_PAGE}&user=${byUser}`)
         .then(errors.errorCheck(this))
         .then((parsed) => {
+            if (parsed['result'] != "ok") {
+                errors.displayError(this, parsed['reason']);
+                return;
+            }
             this.state.loaded = true;
             var posts = this.state.posts;
             var data = parsed['data'];
@@ -80,11 +97,14 @@ class Feed extends React.Component {
                     Date.parse(data[i].date),
                     "yyyy-mm-dd HH:MM"
                 );
+                console.log("auth", this.state.authorized);
                 //<Post text={data[i].text} author={data[i].authorName} key={data[i]._id} _id={data[i]._id} isOwner={data[i].isOwner}></Post>
                 posts.push({text: data[i].text, author: data[i].author, key: data[i]._id, _id: data[i]._id, 
                             isOwner: data[i].isOwner, authorName: data[i].authorName, date: formattedDate,
-                        imageId: data[i].imageId});
+                        imageId: data[i].imageId, isLiked: data[i].isLiked, likesCount: data[i].likesCount,
+                    authorized: this.state.authorized});
             }
+            console.log(posts);
             this.updateState({
                 posts: posts,
                 count: parsed['count'],
@@ -98,10 +118,11 @@ class Feed extends React.Component {
         
         if (this.state.loaded)
             return (
-                <div>{this.state.posts.map(({text, author, authorName, key, _id, isOwner, date, imageId}) => {
+                <div>{this.state.posts.map(({text, isLiked, authorName, key, _id, isOwner, date, imageId, likesCount, authorized}) => {
+                    console.log("lk", likesCount);
                     return <Post text={text} author={authorName}
                     key={key} _id={_id} isOwner={isOwner} onUnmount={() => this.handleUnmount(_id)}
-                    date={date} imageId={imageId}></Post>;
+                    date={date} imageId={imageId} isLiked={isLiked} likesCount={likesCount} authorized={authorized}></Post>;
                 })}
                 <div align="center">
                 {(this.state.page + 1 < Math.ceil(this.state.count / COUNT_PER_PAGE)) && (<Button mode="tertiary" align="center" onClick={(e) => this.loadMore()}>Еще</Button>)}
