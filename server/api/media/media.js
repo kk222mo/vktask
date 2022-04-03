@@ -26,7 +26,7 @@ async function addMedia(file) {
             await sharp(file.data)
                 .resize({
                     fit: sharp.fit.contain,
-                    width: 1280
+                    width: 1280                    // resizing image and saving it to storage
                 }).toFormat("jpeg")
                 .jpeg({quality: 90})
                 .toFile(newPath);

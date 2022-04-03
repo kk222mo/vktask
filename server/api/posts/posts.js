@@ -12,8 +12,8 @@ async function getAllPosts(token, skip, count, userId) {
         var all = await collection.find((userId ? {author: mongodb.ObjectId(userId)} : {})).sort({"date": -1}).skip(parseInt(skip)).limit(parseInt(count)).toArray();
         all.forEach((e) => {
             e.isOwner = (user != null && user._id.toString() == e.author.toString());
-            e.isLiked = (user && e.likes && e.likes[user._id] == 1);
-            e.likesCount = e.likes ? Object.values(e.likes).filter(v => v === 1).length : 0;
+            e.isLiked = (user && e.likes && e.likes[user._id] == 1);                             // parameters precalculating
+            e.likesCount = e.likes ? Object.values(e.likes).filter(v => v === 1).length : 0;     // check putLike function for details
         });
         return {"result": "ok", "count": await collection.countDocuments((userId ? {author: mongodb.ObjectId(userId)} : {})), "data": all};
     } catch (e) {
@@ -27,7 +27,7 @@ async function addPost(token, text, imageId) {
     var user = await credentialsChecker.checkTokenAndGetUser(token);
     if (user != null) {
         var escaped = validator.escape(text); // To prevent XSS
-        if (escaped.trim() == "" && !imageId) // TODO validate text length
+        if (escaped.trim() == "" && !imageId)
             return {"result": "fail", "reason": "И текст и картинка отсутствуют"};
         var inserted = await collection.insertOne({"author": user["_id"], "authorName": user["userName"], "text": escaped,
                                                     "date": new Date(), "imageId": imageId});
@@ -54,9 +54,9 @@ async function deletePost(token, postId) {
 async function putLike(token, postId) {
     var user = await credentialsChecker.checkTokenAndGetUser(token);
     var post = await collection.findOne({"_id": mongodb.ObjectId(postId)});
-    if (post != null && user != null && post.author.toString() != user._id.toString()) {
-        var likes = post.likes;
-        if (!likes)
+    if (post != null && user != null && post.author.toString() != user._id.toString()) { // tricky part, 1 - like, -1 - no like
+        var likes = post.likes;                                                          // this solution was choosen to avoid race condition
+        if (!likes)                                                                      // However, that is not very fast and need to be changed in the future
             likes = {};
         if (!likes[user._id] || likes[user._id] == -1)
             likes[user._id] = 1;
